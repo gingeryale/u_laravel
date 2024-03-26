@@ -15,14 +15,16 @@ use App\Http\Controllers\AboutController;
 |
 */
 
-Route::get('/', function () {
-    return view('homepage');
-});
+// Route::get('/', function () {
+//     return view('homepage');
+// });
 
 // Route::get('/about', function(){
 //     return view('about');
 // });
 
 
+Route::get('/', [UserController::class, "showLogin"] );
 Route::get('/about', [AboutController::class, "aboutSomeone"] );
 Route::post('/register', [UserController::class, "registerUser"]);
+Route::post('/login', [UserController::class, "login"]);

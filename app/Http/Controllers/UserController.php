@@ -14,8 +14,28 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('users', 'email')],
             'password' => ['required', 'min:8', 'confirmed']
         ]);
-        $registerfields['password'] = bcrypt($registerfields['password']);
+        //$registerfields['password'] = bcrypt($registerfields['password']);
         User::create($registerfields);
         return 'page';
+    }
+    public function login(Request $request){
+        $userFields = $request->validate([
+            'loginusername' => 'required',
+            'loginpassword' => 'required'
+        ]);
+        if(auth()->attempt(['username' => $userFields['loginusername'],
+        'password'=> $userFields['loginpassword']])){
+            $request->session()->regenerate();
+            return 'OK';
+        }else{
+            return 'Fail';
+        }
+    }
+    public function showLogin(){
+       if(auth()->check()){
+        return view('homepage-feed');
+       }else{
+        return view('homepage');
+       }
     }
 }
