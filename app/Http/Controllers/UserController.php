@@ -15,8 +15,9 @@ class UserController extends Controller
             'password' => ['required', 'min:8', 'confirmed']
         ]);
         //$registerfields['password'] = bcrypt($registerfields['password']);
-        User::create($registerfields);
-        return 'page';
+        $newUser = User::create($registerfields);
+        auth()->login($newUser);
+        return redirect('/')->with('success','Thanks for joining');
     }
     public function login(Request $request){
         $userFields = $request->validate([
@@ -26,9 +27,9 @@ class UserController extends Controller
         if(auth()->attempt(['username' => $userFields['loginusername'],
         'password'=> $userFields['loginpassword']])){
             $request->session()->regenerate();
-            return 'OK';
+            return redirect('/')->with('success', 'You are now Logged in!');
         }else{
-            return 'Fail';
+            return redirect('/')->with('failure', 'Please enter the correct name and password.');
         }
     }
     public function showLogin(){
@@ -37,5 +38,9 @@ class UserController extends Controller
        }else{
         return view('homepage');
        }
+    }
+    public function logout(){
+        auth()->logout();
+        return redirect('/')->with('success', 'You are now Logged out.');
     }
 }
